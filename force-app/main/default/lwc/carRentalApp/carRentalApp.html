@@ -1,0 +1,120 @@
+<template>
+
+    <lightning-layout>
+        <!--Bike Filters-->
+        <lightning-layout-item padding="around-small" size="3">
+            <div>
+               <lightning-card title="Filters" icon-name="standard:filter">
+                    <div class="filter-container">
+                        <lightning-input label="Car Number" name="carNumber" onchange={handleFilterInp}></lightning-input>
+                        <lightning-input label="Brand" name="carBrand" onchange={handleFilterInp}></lightning-input>
+                        <lightning-input label="Model" name="carModel" onchange={handleFilterInp}></lightning-input>
+                        <lightning-input label="Year" name="carYear" onchange={handleFilterInp}></lightning-input>
+                        <lightning-button-group class="filter-btn">
+                            <lightning-button icon-name="utility:success" label="Apply"  class="nav-item" variant="brand" onclick={applyFilters}></lightning-button>
+                            <lightning-button icon-name="utility:refresh" label="Reset" variant="destructive-text"></lightning-button>
+                        </lightning-button-group>
+                    </div>
+               </lightning-card> 
+            </div>
+        </lightning-layout-item>
+        <!--Bikes Result-->
+        <lightning-layout-item padding="around-small" size="9">
+            <div>
+                 <lightning-card title="Results" icon-name="standard:contact_list">
+                    <!--Nav Bar-->
+                    <lightning-button-group slot="actions">
+                        <lightning-button icon-name="utility:slack_new_window" label="View Bookings"  class="nav-item"></lightning-button>
+                        <lightning-button icon-name="utility:slack_new_window" label="Manage Cars"></lightning-button>
+                    </lightning-button-group>
+                    <!--Result-->
+                    <div class="auto-grid">
+                        <!--No data-->
+                        <template if:true={noCarsReturned}>
+                            <div class="no-results">
+                                <svg xmlns="http://w3.org" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <h3>No Results Found</h3>
+                                <p>We couldn't find any matches. Try checking your spelling or changing your filters.</p>
+                                <button >Clear Search</button>
+                            </div>
+                        </template>
+
+                        <template for:each={cars} for:item="car">
+                            <lightning-card key = {car.Id} class="grid-item" icon-name="custom:custom31">
+                                <p slot="title">{car.Brand__c} {car.Model__c}</p>
+                                <lightning-button label="Book" variant="neutral" slot="actions" onclick={handleBooking} data-carid={car.Id} data-cost={car.Rent_Per_Day__c}></lightning-button>
+                                <!--Car details Table-->
+                                <table class="slds-table slds-table_cell-buffer">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <lightning-icon icon-name="utility:event" size="x-small"></lightning-icon>
+                                                <strong class="slds-m-left_x-small">Year</strong>
+                                                <div class="slds-m-left_large">{car.Year__c}</div>
+                                            </td>
+
+                                            <td>
+                                                <lightning-icon icon-name="utility:money" size="x-small"></lightning-icon>
+                                                <strong class="slds-m-left_x-small">Per Day</strong>
+                                                <div class="slds-m-left_large">₹{car.Rent_Per_Day__c}</div>
+                                            </td>
+
+                                            <td>
+                                                <lightning-icon icon-name="utility:number_input" size="x-small"></lightning-icon>
+                                                <strong class="slds-m-left_x-small">Car Number</strong>
+                                                <div class="slds-m-left_large">{car.Name}</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+            
+                            </lightning-card>
+                        </template>
+                    </div>
+                 </lightning-card>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <!-- modal start -->      
+    <template if:true={showModal}>
+
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- modal header start -->
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Book Car</h2>
+                </header>
+            
+                <!-- modal body start -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <lightning-record-picker
+                        label="Selected Car Modal"
+                        placeholder="Search Car..."
+                        object-api-name="Rental_Car__c"
+                        display-info={carPickerDisplayInfo}
+                        value={modalCarId}
+                        disabled="true"
+                        >
+                    </lightning-record-picker>
+                    <lightning-input label="Customer Name" name = 'cName' onchange={handleBookingInput}></lightning-input>
+                    <lightning-input label="Customer Mobile" name = 'mobile' onchange={handleBookingInput}></lightning-input>
+                    <lightning-input label="Customer Govt Id" name = 'govtId' onchange={handleBookingInput}></lightning-input>
+                    <lightning-input label="Start Date" type="datetime" name = 'stDate' onchange={handleBookingInput}></lightning-input>
+                    <lightning-input label="End Date" type="datetime" name = 'enDate' onchange={handleBookingInput}></lightning-input>
+                </div>
+
+                <!-- modal footer start-->
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Next" variant="brand" class = "slds-m-right_small" onclick={handleProcessBooking}></lightning-button>
+                    <lightning-button variant="destructive-text" onclick={hideModalBox} label="Cancel"></lightning-button>
+                </footer>
+            
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+ <!-- modal end -->
+
+
+</template>
