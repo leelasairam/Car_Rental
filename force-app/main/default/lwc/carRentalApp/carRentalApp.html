@@ -21,10 +21,10 @@
         <!--Bikes Result-->
         <lightning-layout-item padding="around-small" size="9">
             <div>
-                 <lightning-card title="Results" icon-name="standard:contact_list">
+                 <lightning-card title="Results" icon-name="standard:contact_list" >
                     <!--Nav Bar-->
                     <lightning-button-group slot="actions">
-                        <lightning-button icon-name="utility:slack_new_window" label="View Bookings"  class="nav-item"></lightning-button>
+                        <lightning-button icon-name="utility:slack_new_window" label="View Bookings" onclick={navToBookings}  class="nav-item"></lightning-button>
                         <lightning-button icon-name="utility:slack_new_window" label="Manage Cars"></lightning-button>
                     </lightning-button-group>
                     <!--Result-->
@@ -40,7 +40,7 @@
                         </template>
 
                         <template for:each={cars} for:item="car">
-                            <lightning-card key = {car.Id} class="grid-item" icon-name="custom:custom31">
+                            <lightning-card key = {car.Id} class="grid-item slds-card_boundary" icon-name="custom:custom31" >
                                 <p slot="title">{car.Brand__c} {car.Model__c}</p>
                                 <lightning-button label="Book" variant="neutral" slot="actions" onclick={handleBooking} data-carid={car.Id} data-cost={car.Rent_Per_Day__c}></lightning-button>
                                 <!--Car details Table-->

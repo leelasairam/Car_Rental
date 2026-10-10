@@ -1,0 +1,53 @@
+<template>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small" size = "3">
+            <!--Filters/Search-->
+            <div style="background-color: white; padding:0.5 rem">
+                <lightning-tabset>
+                    <lightning-tab label="Search">
+                    <!--Search-->
+                        <div>
+                            <lightning-card title="Search" icon-name="standard:search">
+                                <div class="slds-p-around_small">
+                                    <lightning-combobox label="Search By"></lightning-combobox>
+                                    <lightning-input label="Enter Value"></lightning-input><br/>
+                                    <lightning-button label="Search" variant="brand"></lightning-button>
+                                </div>
+                            </lightning-card>
+                        </div>
+                    </lightning-tab>
+                    <lightning-tab label="Filter">
+                        <!--Filter-->
+                        <div>
+                            <lightning-card title="Filter" icon-name="standard:filter">
+                                <div class="slds-p-around_small">
+                                    <lightning-combobox label="Status"></lightning-combobox>
+                                </div>
+                            </lightning-card>
+                        </div>
+                    </lightning-tab>
+                </lightning-tabset>
+            </div>
+            
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="9">
+            <!--Bookings-->
+            <div>
+                <lightning-card title="Bookings" icon-name="standard:orders">
+                    <lightning-button-group slot="actions">
+                        <lightning-button icon-name="utility:enter" label="Return" variant="brand" onclick={processReturn}></lightning-button>
+                    </lightning-button-group>
+                    <!--Booking table-->
+                    <div style="width:100%">
+                        <lightning-datatable
+                                key-field="id"
+                                data={bookingsList}
+                                columns={columns}
+                                onrowselection={handleRowSelection}>
+                        </lightning-datatable>
+                    </div>
+                </lightning-card>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

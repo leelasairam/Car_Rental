@@ -57,6 +57,8 @@ public class CarRenatalsController {
         CB.Customer_Mobile__c = (String)bookingInfo.get('mobile');
         CB.Customer_Govt_Id__c = (String)bookingInfo.get('govtId');
         CB.Customer_Name__c = (String)bookingInfo.get('cName');
+        CB.Total_Days__c = (Decimal)bookingInfo.get('totalDays');
+        CB.Booking_Cost__c = (Decimal)bookingInfo.get('totalCost');
         insert CB;
         
         Rental_Car__c RC = new Rental_Car__c();
@@ -65,6 +67,21 @@ public class CarRenatalsController {
         update RC;
     }
     
+	@AuraEnabled
+    public static list<Car_Bookings__c> getBookings(){
+        return [SELECT Id,Name,CreatedDate,Start_Date__c,End_Date__c,Customer_Govt_Id__c,Customer_Name__c,Customer_Mobile__c,Rental_Car__c,Rental_Car__r.Brand__c,Rental_Car__r.Model__c,Rental_Car__r.Name,Rental_Car__r.Rent_Per_Day__c,Actual_Return__c,Status__c,Delayed_Days__c,Total_Days__c,Booking_Cost__c FROM Car_Bookings__c Order By CreatedDate DESC LIMIT 2000];
+    }    
+    
+    @AuraEnabled
+    public static void updateBookingOnReturn(Id bookingId,decimal revAmount,decimal due,Boolean isDelayed){
+        Car_Bookings__c cb = new Car_Bookings__c();
+        cb.Id = bookingId;
+        cb.Actual_Return__c = system.now();
+        cb.Paid_Amount__c = revAmount;
+        update cb;
+    }
+        
+        
     public class CarsWrapper{
         @AuraEnabled public Boolean avaialble { get; set; } 
         @AuraEnabled public String carNumber { get; set; }
