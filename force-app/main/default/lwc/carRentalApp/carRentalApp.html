@@ -6,13 +6,13 @@
             <div>
                <lightning-card title="Filters" icon-name="standard:filter">
                     <div class="filter-container">
-                        <lightning-input label="Car Number" name="carNumber" onchange={handleFilterInp}></lightning-input>
-                        <lightning-input label="Brand" name="carBrand" onchange={handleFilterInp}></lightning-input>
-                        <lightning-input label="Model" name="carModel" onchange={handleFilterInp}></lightning-input>
-                        <lightning-input label="Year" name="carYear" onchange={handleFilterInp}></lightning-input>
+                        <lightning-input label="Car Number" name="carNumber" onchange={handleFilterInp} value={carFilters.carNumber}></lightning-input>
+                        <lightning-input label="Brand" name="carBrand" onchange={handleFilterInp} value={carFilters.carBrand}></lightning-input>
+                        <lightning-input label="Model" name="carModel" onchange={handleFilterInp} value={carFilters.carModel}></lightning-input>
+                        <lightning-input label="Year" name="carYear" onchange={handleFilterInp} value={carFilters.carYear}></lightning-input>
                         <lightning-button-group class="filter-btn">
                             <lightning-button icon-name="utility:success" label="Apply"  class="nav-item" variant="brand" onclick={applyFilters}></lightning-button>
-                            <lightning-button icon-name="utility:refresh" label="Reset" variant="destructive-text"></lightning-button>
+                            <lightning-button icon-name="utility:refresh" label="Reset" onclick= {restFilters} variant="destructive-text"></lightning-button>
                         </lightning-button-group>
                     </div>
                </lightning-card> 
@@ -25,7 +25,7 @@
                     <!--Nav Bar-->
                     <lightning-button-group slot="actions">
                         <lightning-button icon-name="utility:slack_new_window" label="View Bookings" onclick={navToBookings}  class="nav-item"></lightning-button>
-                        <lightning-button icon-name="utility:slack_new_window" label="Manage Cars"></lightning-button>
+                        <lightning-button icon-name="utility:slack_new_window" label="Manage Cars" onclick={navToMangeCars}></lightning-button>
                     </lightning-button-group>
                     <!--Result-->
                     <div class="auto-grid">

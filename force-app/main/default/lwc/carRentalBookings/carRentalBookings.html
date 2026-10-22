@@ -9,15 +9,15 @@
                         <div>
                             <lightning-card title="Search" icon-name="standard:search">
                                 <div class="slds-p-around_small">
-                                    <lightning-combobox label="Search By"></lightning-combobox>
-                                    <lightning-input label="Enter Value"></lightning-input><br/>
-                                    <lightning-button label="Search" variant="brand"></lightning-button>
+                                    <lightning-combobox label="Search By" name="field" onchange={searchInputHandler} options={searchFormFields}></lightning-combobox>
+                                    <lightning-input label="Enter Value" name="value" onchange={searchInputHandler}></lightning-input><br/>
+                                    <lightning-button label="Search" variant="brand" onclick={searchBookings}></lightning-button>
                                 </div>
                             </lightning-card>
                         </div>
                     </lightning-tab>
+                    <!-- Everything inside here is now successfully commented out
                     <lightning-tab label="Filter">
-                        <!--Filter-->
                         <div>
                             <lightning-card title="Filter" icon-name="standard:filter">
                                 <div class="slds-p-around_small">
@@ -26,6 +26,7 @@
                             </lightning-card>
                         </div>
                     </lightning-tab>
+                    -->
                 </lightning-tabset>
             </div>
             

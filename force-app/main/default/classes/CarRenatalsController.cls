@@ -68,18 +68,44 @@ public class CarRenatalsController {
     }
     
 	@AuraEnabled
-    public static list<Car_Bookings__c> getBookings(){
-        return [SELECT Id,Name,CreatedDate,Start_Date__c,End_Date__c,Customer_Govt_Id__c,Customer_Name__c,Customer_Mobile__c,Rental_Car__c,Rental_Car__r.Brand__c,Rental_Car__r.Model__c,Rental_Car__r.Name,Rental_Car__r.Rent_Per_Day__c,Actual_Return__c,Status__c,Delayed_Days__c,Total_Days__c,Booking_Cost__c FROM Car_Bookings__c Order By CreatedDate DESC LIMIT 2000];
+    public static list<Car_Bookings__c> getBookings(Boolean isSearch,Boolean isFilter,map<String,String>searchInfo,map<String,String>filterInfo){
+        string baseQuery = 'SELECT Id,Name,CreatedDate,Start_Date__c,End_Date__c,Customer_Govt_Id__c,Customer_Name__c,Customer_Mobile__c,Rental_Car__c,Rental_Car__r.Brand__c,Rental_Car__r.Model__c,Rental_Car__r.Name,Rental_Car__r.Rent_Per_Day__c,Actual_Return__c,Status__c,Delayed_Days__c,Total_Days__c,Booking_Cost__c FROM Car_Bookings__c';
+        if(!isSearch && !isFilter){
+            string query = baseQuery + ' Order By CreatedDate DESC LIMIT 2000';
+            return database.query(query);
+        }
+        else if(isSearch && !searchInfo.isEmpty() && searchInfo!=null){
+            string field = searchInfo.get('field');
+            string value = searchInfo.get('value');
+            string query = baseQuery + ' WHERE ' + field + ' LIKE \'%' + value + '%\'';
+            return database.query(query);
+        }
+        else if(isFilter && !filterInfo.isEmpty() && filterInfo!=null){
+            string filter = filterInfo.get('filter');
+            string query = baseQuery + ' WHERE ' + filter;
+            return database.query(query);
+        }
+        else{
+            return null;
+        }
     }    
     
     @AuraEnabled
-    public static void updateBookingOnReturn(Id bookingId,decimal revAmount,decimal due,Boolean isDelayed){
+    public static void updateBookingOnReturn(Id bookingId,decimal revAmount,Boolean isDelayed){
         Car_Bookings__c cb = new Car_Bookings__c();
         cb.Id = bookingId;
         cb.Actual_Return__c = system.now();
         cb.Paid_Amount__c = revAmount;
         update cb;
+        list<Car_Bookings__c>bookedCar = [SELECT Id,Rental_Car__c FROM Car_Bookings__c WHERE Id =: bookingId AND Rental_Car__c != null];
+        if(!bookedCar.isEmpty()){
+            Id bookedCarId = bookedCar[0].Rental_Car__c;
+            Rental_Car__c RC = new Rental_Car__c();
+            RC.Available__c = true;
+            update RC;
+        }
     }
+    
         
         
     public class CarsWrapper{

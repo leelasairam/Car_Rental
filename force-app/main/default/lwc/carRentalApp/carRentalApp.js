@@ -139,4 +139,26 @@ export default class CarRentalApp extends NavigationMixin(LightningElement) {
             console.error('Error opening new tab', error);
         }
     }
+
+    navToMangeCars() {
+        const pageReference = {
+            type: 'standard__webPage',
+            attributes: {
+                url: '/lightning/o/Rental_Car__c/list?filterName=All'
+            }
+        };
+
+        this[NavigationMixin.GenerateUrl](pageReference)
+        .then((url) => {
+            window.open(url, '_blank');
+        })
+        .catch((error) => {
+            console.error('Navigation error:', error);
+        });
+    }
+
+    restFilters(){
+        this.carFilters = {...this.carFilters,carBrand : '', carModel : '', carYear : '',carNumber : ''};
+        this.applyFilters();
+    }
 }

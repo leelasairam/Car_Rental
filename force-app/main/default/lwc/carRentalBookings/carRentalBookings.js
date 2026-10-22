@@ -64,6 +64,19 @@ export default class CarRentalBookings extends LightningElement {
         },
     ];
 
+    @track searchFoam = {field:'',value:''};
+    @track filterFoam = {};
+
+    searchFormFields = [
+            { label: 'Status', value: 'Status__c' },
+            { label: 'Booking Id', value: 'Name' },
+            { label: 'Car Number', value: 'Rental_Car__r.Name' },
+            { label: 'Car Brand', value: 'Rental_Car__r.Brand__c' },
+            { label: 'Car Model', value: ',Rental_Car__r.Model__c' },
+            { label: 'Customer Name', value: 'Customer_Name__c' },
+            { label: 'Customer Mobile', value: 'Customer_Mobile__c' },
+        ];
+
     showToast(title,msg,variant) {
         Toast.show({
                 label: title,
@@ -74,11 +87,11 @@ export default class CarRentalBookings extends LightningElement {
     }
 
     connectedCallback(){
-        this.fetchBookings();
+        this.fetchBookings(false,false,null,null);
     }
 
-    fetchBookings(){
-        getBookings()
+    fetchBookings(isSearch,isFilter,searchInfo,filterInfo){
+        getBookings({isSearch:isSearch,isFilter:isFilter,searchInfo:searchInfo,filterInfo:filterInfo})
         .then(result=>{
             console.log(JSON.stringify(result));
             this.bookingsList = result.map(item => ({...item,carNumber : item.Rental_Car__r.Name,carName:`${item.Rental_Car__r.Brand__c} ${item.Rental_Car__r.Model__c}`,statusColor:item.Status__c=='Delyed' ? "slds-text-color_error" : item.Status__c=='In Ride' ? "slds-text-color_warning" : "slds-text-color_success",recordIdLink:`/${item.Id}`}));
@@ -156,5 +169,15 @@ export default class CarRentalBookings extends LightningElement {
             returnData.diffDays = Number(diff.toFixed(1)); ;
         }
         return returnData;
+    }
+
+    searchBookings(){
+        this.fetchBookings(true,false,this.searchFoam,null);
+    }
+
+    searchInputHandler(event){
+        const fieldInp = event.target.name;
+        const valueInp = event.target.value;
+        this.searchFoam = {...this.searchFoam,[fieldInp] : valueInp};
     }
 }
